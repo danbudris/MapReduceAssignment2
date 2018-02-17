@@ -25,8 +25,8 @@ public class Task1 {
                  ) {
                 System.out.println(str + "\n");
             }
-            if  (fields.length > 1)
-                //if (Double.parseDouble(fields[7]) > 0.000000)
+            if  (fields.length == 17)
+                if (Double.parseDouble(fields[7]) == 0.000000)
                     context.write(new Text(fields[3]), one);
         }
     }
