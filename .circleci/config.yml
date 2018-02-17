@@ -39,3 +39,8 @@ jobs:
 
       # run tests!
       - run: mvn integration-test
+
+      - run: mvn package
+
+      - store_artifacts:
+          path: target/assign2-0.1-SNAPSHOT-jar-with-dependencies.jar
