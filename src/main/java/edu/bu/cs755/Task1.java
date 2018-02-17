@@ -21,8 +21,12 @@ public class Task1 {
             String line = value.toString();
             System.out.println(line);
             String[] fields = line.split(",");
+            for (String str : fields
+                 ) {
+                System.out.println(str + "\n");
+            }
             if  (fields.length > 1)
-                if (Double.parseDouble(fields[7]) > 0.000000)
+                //if (Double.parseDouble(fields[7]) > 0.000000)
                     context.write(new Text(fields[3]), one);
         }
     }
