@@ -21,10 +21,9 @@ public class Task1 {
             String line = value.toString();
             System.out.println(line);
             String[] fields = line.split(",");
-            System.out.println(fields[0] + "WAAAAAALJ:LDJFLKDSJF:LKDSJFLKSDJFLKJSDLK:FJSDF");
-            //if  (fields.length > 1)
-                //if (Double.parseDouble(fields[7]) > 0.000000)
-                    context.write(new Text(fields[0]), one);
+            if  (fields.length > 1)
+                if (Double.parseDouble(fields[7]) > 0.000000)
+                    context.write(new Text(fields[3]), one);
         }
     }
 
