@@ -20,7 +20,7 @@ public class Task1 {
         ) throws IOException, InterruptedException {
             String line = key.toString();
             String[] fields = line.split(",");
-            if  (fields.length == 17)
+            if  (fields.length > 1)
                 if (Double.parseDouble(fields[7]) > 0.000000)
                     context.write(new Text(fields[3]), one);
         }
