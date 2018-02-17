@@ -22,7 +22,6 @@ public class Task1 {
             System.out.println(line);
             String[] fields = line.split(",");
             System.out.println(fields[0]);
-            System.out.println(fields[1]);
             //if  (fields.length > 1)
                 //if (Double.parseDouble(fields[7]) > 0.000000)
                     context.write(new Text(fields[0]), one);
