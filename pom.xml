@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <name>Hadoop MapReduce</name>
     <description>BU MET CS 755 Assignment 2: Hadoop MapReduce </description>
-    <groupId>edu.bu.cs775.Task1</groupId>
+    <groupId>edu.bu.cs775</groupId>
     <artifactId>assign2</artifactId>
     <version>0.1-SNAPSHOT</version>
 
@@ -36,7 +36,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>edu.bu.cs755.Task1.main</mainClass>
+                            <mainClass>edu.bu.cs755.Task1</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
