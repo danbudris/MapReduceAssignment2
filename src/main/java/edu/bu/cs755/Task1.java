@@ -18,7 +18,7 @@ public class Task1 {
         private final static IntWritable one = new IntWritable(1);
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
-            String line = key.toString();
+            String line = value.toString();
             System.out.println(line);
             String[] fields = line.split(",");
             System.out.println(fields[0] + "WAAAAAALJ:LDJFLKDSJF:LKDSJFLKSDJFLKJSDLK:FJSDF");
