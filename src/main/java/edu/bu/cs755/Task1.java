@@ -27,10 +27,10 @@ public class Task1 {
         ) throws IOException, InterruptedException {
             String line = value.toString();
             String[] fields = line.split(",");
-           /* for (String str : fields
+            for (String str : fields
                  ) {
                 System.out.println(str + "\n");
-            } */
+            }
             System.out.println(fields.length);
             if  (fields.length == 17)
                 if (Double.parseDouble(fields[7]) == 0.000000)
