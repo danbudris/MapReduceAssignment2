@@ -1,5 +1,6 @@
+package edu.bu.cs755;
+
 import java.io.IOException;
-import java.util.Date;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
