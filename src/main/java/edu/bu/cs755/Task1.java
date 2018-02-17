@@ -2,6 +2,9 @@ package edu.bu.cs755;
 
 import java.io.IOException;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -12,10 +15,14 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
+
 public class Task1 {
 
     public static class GetErrors extends Mapper<Object, Text, Text, IntWritable>{
+
         private final static IntWritable one = new IntWritable(1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
             String line = value.toString();
@@ -27,7 +34,7 @@ public class Task1 {
             System.out.println(fields.length);
             if  (fields.length == 17)
                 if (Double.parseDouble(fields[7]) == 0.000000)
-                    context.write(new Text(fields[2]), one);
+                    context.write(new Text(fields[2].substring(11,13)), one);
         }
     }
 
