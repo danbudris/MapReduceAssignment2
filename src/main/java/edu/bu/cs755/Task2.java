@@ -16,11 +16,11 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Task2 {
 
-    public static class GetMedallionErrors extends Mapper<Object, Text, Text, IntWritable>{
+    public static class GetMedallionErrors extends Mapper<Object, Text, Text, DoubleWritable> {
 
         // Set the variable which will be the value in the output map
-        private final static IntWritable one = new IntWritable(1);
-        private final static IntWritable two = new IntWritable(2);
+        private final static DoubleWritable one = new DoubleWritable(1);
+        private final static DoubleWritable two = new DoubleWritable(2);
 
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
@@ -42,16 +42,16 @@ public class Task2 {
         }
     }
 
-    public static class ErrRatePercentageReducer extends Reducer<Text,IntWritable,Text,DoubleWritable> {
+    public static class ErrRatePercentageReducer extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
         private DoubleWritable result = new DoubleWritable();
-        public void reduce(Text key, Iterable<IntWritable> values,
+        public void reduce(Text key, Iterable<DoubleWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
             // Store the number of error records
-            int errSum = 0;
+            double errSum = 0;
             // Store the total number of records
-            int totalSum = 0;
-            for (IntWritable val : values) {
+            double totalSum = 0;
+            for (DoubleWritable val : values) {
                 // increment the total number of records
                 totalSum += 1;
                 if (val.get() == 1)
@@ -59,7 +59,7 @@ public class Task2 {
                     errSum += 1;
             }
             // set the result to the percentage of error records in the total records for the given medallion number
-            result.set((double)errSum/(double)totalSum);
+            result.set(errSum/totalSum);
             context.write(key, result);
         }
     }
@@ -69,7 +69,7 @@ public class Task2 {
         Job job =  new Job(conf, "task1");
         job.setJarByClass(Task2.class);
         job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
+        job.setMapOutputValueClass(DoubleWritable.class);
         job.setMapperClass(Task2.GetMedallionErrors.class);
         job.setCombinerClass(ErrRatePercentageReducer.class);
         job.setReducerClass(ErrRatePercentageReducer.class);
