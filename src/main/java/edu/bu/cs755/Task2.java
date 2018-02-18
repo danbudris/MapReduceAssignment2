@@ -36,7 +36,7 @@ public class Task2 {
                 // if the record contains GPS errors, set the value to 1
                 if (Double.parseDouble(fields[6]) == 0.000000 && Double.parseDouble(fields[7]) == 0.000000 && Double.parseDouble(fields[8]) == 0.000000 && Double.parseDouble(fields[9]) == 0.000000 )
                     context.write(new Text(fields[0]), one);
-                // if it does not have erros, set the value to 2
+                // if it does not have errors, set the value to 2
                 else
                     context.write(new Text(fields[0]), two);
         }
@@ -69,7 +69,7 @@ public class Task2 {
         Job job =  new Job(conf, "task1");
         job.setJarByClass(Task2.class);
         job.setMapperClass(Task2.GetMedallionErrors.class);
-        job.setCombinerClass(ErrRatePercentageReducer.class);
+        //job.setCombinerClass(ErrRatePercentageReducer.class);
         job.setReducerClass(ErrRatePercentageReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
