@@ -2,13 +2,8 @@ package edu.bu.cs755;
 
 import java.io.IOException;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -47,7 +42,7 @@ public class Task2 {
         }
     }
 
-    public static class IntSumReducer extends Reducer<Text,IntWritable,Text,DoubleWritable> {
+    public static class ErrRatePercentageReducer extends Reducer<Text,IntWritable,Text,DoubleWritable> {
         private DoubleWritable result = new DoubleWritable();
         public void reduce(Text key, Iterable<IntWritable> values,
                            Context context
@@ -74,10 +69,10 @@ public class Task2 {
         Job job =  new Job(conf, "task1");
         job.setJarByClass(Task2.class);
         job.setMapperClass(Task2.GetMedallionErrors.class);
-        job.setCombinerClass(Task2.IntSumReducer.class);
-        job.setReducerClass(Task2.IntSumReducer.class);
+        job.setCombinerClass(ErrRatePercentageReducer.class);
+        job.setReducerClass(ErrRatePercentageReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(DoubleWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
