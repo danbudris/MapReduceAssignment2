@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -16,9 +18,9 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
-public class Task1 {
+public class Task2 {
 
-    public static class GetErrors extends Mapper<Object, Text, Text, IntWritable>{
+    public static class GetMedallionErrors extends Mapper<Object, Text, Text, IntWritable>{
 
         // Set the variable which will be the value in the output map
         private final static IntWritable one = new IntWritable(1);
@@ -28,13 +30,13 @@ public class Task1 {
             String line = value.toString();
             String[] fields = line.split(",");
             for (String str : fields
-                 ) {
+                    ) {
                 System.out.println(str + "\n");
             }
             System.out.println(fields.length);
             if  (fields.length == 17)
                 if (Double.parseDouble(fields[6]) == 0.000000 && Double.parseDouble(fields[7]) == 0.000000 && Double.parseDouble(fields[8]) == 0.000000 && Double.parseDouble(fields[9]) == 0.000000 )
-                    context.write(new Text(fields[2].substring(11,13)), one);
+                    context.write(new Text(fields[0]), one);
         }
     }
 
@@ -55,10 +57,10 @@ public class Task1 {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job =  new Job(conf, "task1");
-        job.setJarByClass(Task1.class);
-        job.setMapperClass(Task1.GetErrors.class);
-        job.setCombinerClass(Task1.IntSumReducer.class);
-        job.setReducerClass(Task1.IntSumReducer.class);
+        job.setJarByClass(Task2.class);
+        job.setMapperClass(Task2.GetMedallionErrors.class);
+        job.setCombinerClass(Task2.IntSumReducer.class);
+        job.setReducerClass(Task2.IntSumReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
