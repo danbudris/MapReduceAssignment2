@@ -53,6 +53,8 @@ public class Task3 {
                 // add to the total money per minute
                 moneyPerMinute += val.get();
             }
+            System.out.println(totalRides);
+            System.out.println(moneyPerMinute);
             // set the result to the money per minute total divided by the trips total, which is the average money per minute
             result.set(moneyPerMinute/totalRides);
             //write to the context the medallion number and money per minute for this ride
