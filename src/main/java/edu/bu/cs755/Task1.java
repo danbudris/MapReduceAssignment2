@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-
+// successfully returns the number of trips taken in an hour per day
 public class Task1 {
 
     public static class GetErrors extends Mapper<Object, Text, Text, IntWritable>{

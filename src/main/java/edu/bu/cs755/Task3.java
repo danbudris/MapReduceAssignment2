@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-
+// Successfully returns the money-per-minute of all cab rides in data set
 public class Task3 {
 
     public static class GetTripPrice extends Mapper<Object, Text, Text, DoubleWritable>{
@@ -34,9 +34,11 @@ public class Task3 {
                 moneyPerMinute.set(fare/minutes);
 
                 //troubleshooting
+                /*
                 System.out.println("FARE: " + fare);
                 System.out.println("Minutes: " + minutes);
                 System.out.println("moneyPerMinute: " + moneyPerMinute);
+                */
 
                 // write to the context the medallion number and money per minute for this ride
                 context.write(new Text(fields[0]), moneyPerMinute);
@@ -60,14 +62,19 @@ public class Task3 {
                 moneyPerMinute += val.get();
             }
             // troubleshooting
+            /*
             System.out.println("Total Rides:" + totalRides);
             System.out.println("Money Per Minute: " + moneyPerMinute);
+            */
+
             // set the result to the money per minute total divided by the trips total, which is the average money per minute
             result.set(moneyPerMinute/totalRides);
             //write to the context the medallion number and money per minute for this ride
             context.write(key, result);
         }
     }
+
+
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
@@ -76,6 +83,7 @@ public class Task3 {
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DoubleWritable.class);
         job.setMapperClass(GetTripPrice.class);
+        //job.setCombinerClass(SumFaresPerMinute.class);
         job.setReducerClass(SumFaresPerMinute.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);

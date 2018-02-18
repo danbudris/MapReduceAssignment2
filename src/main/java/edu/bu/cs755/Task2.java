@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-
+// successfully returns the error rate as a percentage of total rides
 public class Task2 {
 
     public static class GetMedallionErrors extends Mapper<Object, Text, Text, DoubleWritable>{
