@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -17,53 +15,47 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Task3 {
 
-    public static class GetMedallionErrors extends Mapper<Object, Text, Text, DoubleWritable>{
-
-        // Set the variable which will be the value in the output map
-        private final static DoubleWritable one = new DoubleWritable(1);
-        private final static DoubleWritable zero = new DoubleWritable(0);
+    public static class GetTripPrice extends Mapper<Object, Text, Text, DoubleWritable>{
 
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
+            // set the input string
             String line = value.toString();
+            // split the string, on commas, into a list of strings
             String[] fields = line.split(",");
             // only process records with exactly 17 fields, thus discarding some malformed records
             if  (fields.length == 17) {
-                // if the record contains GPS errors (blank fields or all zeros), set the value to 1
-                if (fields[6].equals("0.000000") || fields[7].equals("0.000000") || fields[8].equals("0.000000") || fields[9].equals("0.000000") || fields[6].equals("") || fields[7].equals("") || fields[8].equals("") || fields[9].equals("")) {
-                    context.write(new Text(fields[0]), one);
-                }
-                // if it does not have errors, set the value to 0
-                else {
-                    context.write(new Text(fields[0]), zero);
-                }
+                // get the total fare for the current ride
+                Double fare = Double.parseDouble(fields[16]);
+                // get the number of minutes of the current ride
+                Double minutes = (Double.parseDouble(fields[4])/60);
+                // create the var for output, and set to the dollars per minute for this ride
+                DoubleWritable moneyPerMinute = new DoubleWritable();
+                moneyPerMinute.set(fare/minutes);
+                // write to the context the medallion number and money per minute for this ride
+                context.write(new Text(fields[0]), moneyPerMinute);
             }
         }
     }
 
-    public static class ErrRatePercentageReducer extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
+    public static class SumFaresPerMinute extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
         private DoubleWritable result = new DoubleWritable();
         public void reduce(Text key, Iterable<DoubleWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
-            // Store the number of error records
-            double errSum = 0;
-            // Store the total number of records
-            double totalSum = 0;
+            // the total ride for this medallion number
+            double totalRides = 0;
+            // the total money per minute for this medallion number
+            double moneyPerMinute = 0;
             for (DoubleWritable val : values) {
-                // increment the total number of trips this taxi has taken
-                totalSum += 1;
-                // increment the error counter; non-errors are equal to 0, errors equal to 1
-                errSum += val.get();
+                // increment the total rides
+                totalRides += 1;
+                // add to the total money per minute
+                moneyPerMinute += val.get();
             }
-            /* Print lines for debugging
-            System.out.println(key);
-            System.out.println("ErrSum" + Double.toString(errSum));
-            System.out.println("TotalSum" + Double.toString(totalSum));
-            System.out.println("ErrPercentage" + Double.toString(errSum/totalSum));
-            */
-            // set the result to the percentage of error records in the total records for the given medallion number
-            result.set(errSum/totalSum);
+            // set the result to the money per minute total divided by the trips total, which is the average money per minute
+            result.set(moneyPerMinute/totalRides);
+            //write to the context the medallion number and money per minute for this ride
             context.write(key, result);
         }
     }
@@ -74,9 +66,8 @@ public class Task3 {
         job.setJarByClass(Task2.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DoubleWritable.class);
-        job.setMapperClass(Task2.GetMedallionErrors.class);
-        //job.setCombinerClass(ErrRatePercentageReducer.class);
-        job.setReducerClass(ErrRatePercentageReducer.class);
+        job.setMapperClass(GetTripPrice.class);
+        job.setReducerClass(SumFaresPerMinute.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
