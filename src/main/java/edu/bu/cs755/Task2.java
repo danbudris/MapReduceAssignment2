@@ -21,7 +21,7 @@ public class Task2 {
 
         // Set the variable which will be the value in the output map
         private final static DoubleWritable one = new DoubleWritable(1);
-        private final static DoubleWritable two = new DoubleWritable(2);
+        private final static DoubleWritable zero = new DoubleWritable(0);
 
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
@@ -31,11 +31,11 @@ public class Task2 {
             if  (fields.length == 17) {
                 // if the record contains GPS errors, set the value to 2
                 if (fields[6].equals("0.000000") || fields[7].equals("0.000000") || fields[8].equals("0.000000") || fields[9].equals("0.000000") || fields[6].equals("") || fields[7].equals("") || fields[8].equals("") || fields[9].equals("")) {
-                    context.write(new Text(fields[0]), two);
+                    context.write(new Text(fields[0]), one);
                 }
                 // if it does not have errors, set the value to 1
                 else {
-                    context.write(new Text(fields[0]), one);
+                    context.write(new Text(fields[0]), zero);
                 }
             }
         }
@@ -43,19 +43,17 @@ public class Task2 {
 
     public static class ErrRatePercentageReducer extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
         private DoubleWritable result = new DoubleWritable();
-        public void reduce(Text key, Iterable<MapWritable> values,
+        public void reduce(Text key, Iterable<DoubleWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
             // Store the number of error records
             double errSum = 0;
             // Store the total number of records
             double totalSum = 0;
-            for (MapWritable val : values) {
+            for (DoubleWritable val : values) {
                 // increment the total number of records
                 totalSum += 1;
-                if (val.containsValue(2))
-                    // if the value is 1 (an error record) increment the error sum
-                    errSum += 1;
+                errSum += val.get();
             }
             System.out.println(key);
             System.out.println("ErrSum" + Double.toString(errSum));
