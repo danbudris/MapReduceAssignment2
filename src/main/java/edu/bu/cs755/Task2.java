@@ -57,6 +57,9 @@ public class Task2 {
                 if (val.get() == 1)
                     // if the value is 1 (an error record) increment the error sum
                     errSum += 1;
+                System.out.println("!!!!!!!!!!" + Double.toString(errSum));
+                System.out.println("!!!!!!!!!!" + Double.toString(totalSum));
+                System.out.println("!!!!!!!!!!" + Double.toString(errSum/totalSum));
             }
             // set the result to the percentage of error records in the total records for the given medallion number
             result.set(errSum/totalSum);
