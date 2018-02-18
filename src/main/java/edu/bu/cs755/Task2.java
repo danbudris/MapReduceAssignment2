@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -16,7 +17,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Task2 {
 
-    public static class GetMedallionErrors extends Mapper<Object, Text, Text, DoubleWritable> {
+    public static class GetMedallionErrors extends Mapper<Object, Text, Text, DoubleWritable>{
 
         // Set the variable which will be the value in the output map
         private final static DoubleWritable one = new DoubleWritable(1);
@@ -26,35 +27,33 @@ public class Task2 {
         ) throws IOException, InterruptedException {
             String line = value.toString();
             String[] fields = line.split(",");
-            for (String str : fields
-                    ) {
-                System.out.println(str + "\n");
-            }
-            System.out.println(fields.length);
             // only process records with exactly 17 fields, thus discarding malformed records
-            if  (fields.length == 17)
-                // if the record contains GPS errors, set the value to 1
-                if (Double.parseDouble(fields[6]) == 0.000000 && Double.parseDouble(fields[7]) == 0.000000 && Double.parseDouble(fields[8]) == 0.000000 && Double.parseDouble(fields[9]) == 0.000000 )
-                    context.write(new Text(fields[0]), one);
-                // if it does not have errors, set the value to 2
-                else
+            if  (fields.length == 17) {
+                // if the record contains GPS errors, set the value to 2
+                if (fields[6].equals("0.000000") || fields[7].equals("0.000000") || fields[8].equals("0.000000") || fields[9].equals("0.000000") || fields[6].equals("") || fields[7].equals("") || fields[8].equals("") || fields[9].equals("")) {
                     context.write(new Text(fields[0]), two);
+                }
+                // if it does not have errors, set the value to 1
+                else {
+                    context.write(new Text(fields[0]), one);
+                }
+            }
         }
     }
 
     public static class ErrRatePercentageReducer extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
         private DoubleWritable result = new DoubleWritable();
-        public void reduce(Text key, Iterable<DoubleWritable> values,
+        public void reduce(Text key, Iterable<MapWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
             // Store the number of error records
             double errSum = 0;
             // Store the total number of records
             double totalSum = 0;
-            for (DoubleWritable val : values) {
+            for (MapWritable val : values) {
                 // increment the total number of records
                 totalSum += 1;
-                if (val.get() == 1)
+                if (val.containsValue(2))
                     // if the value is 1 (an error record) increment the error sum
                     errSum += 1;
             }
