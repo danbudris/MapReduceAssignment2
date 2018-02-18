@@ -68,8 +68,10 @@ public class Task2 {
         Configuration conf = new Configuration();
         Job job =  new Job(conf, "task1");
         job.setJarByClass(Task2.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
         job.setMapperClass(Task2.GetMedallionErrors.class);
-        //job.setCombinerClass(ErrRatePercentageReducer.class);
+        job.setCombinerClass(ErrRatePercentageReducer.class);
         job.setReducerClass(ErrRatePercentageReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
