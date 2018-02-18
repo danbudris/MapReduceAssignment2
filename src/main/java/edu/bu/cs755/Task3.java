@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -13,7 +15,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
-public class Task2 {
+public class Task3 {
 
     public static class GetMedallionErrors extends Mapper<Object, Text, Text, DoubleWritable>{
 
@@ -68,11 +70,12 @@ public class Task2 {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job =  new Job(conf, "task2");
+        Job job =  new Job(conf, "task3");
         job.setJarByClass(Task2.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DoubleWritable.class);
         job.setMapperClass(Task2.GetMedallionErrors.class);
+        //job.setCombinerClass(ErrRatePercentageReducer.class);
         job.setReducerClass(ErrRatePercentageReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);

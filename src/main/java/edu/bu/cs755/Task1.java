@@ -2,9 +2,6 @@ package edu.bu.cs755;
 
 import java.io.IOException;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -32,9 +29,11 @@ public class Task1 {
                 System.out.println(str + "\n");
             }
             System.out.println(fields.length);
-            if  (fields.length == 17)
-                if (Double.parseDouble(fields[6]) == 0.000000 && Double.parseDouble(fields[7]) == 0.000000 && Double.parseDouble(fields[8]) == 0.000000 && Double.parseDouble(fields[9]) == 0.000000 )
-                    context.write(new Text(fields[2].substring(11,13)), one);
+            if  (fields.length == 17) {
+                if (fields[6].equals("0.000000") || fields[7].equals("0.000000") || fields[8].equals("0.000000") || fields[9].equals("0.000000") || fields[6].equals("") || fields[7].equals("") || fields[8].equals("") || fields[9].equals("")) {
+                    context.write(new Text(fields[2].substring(11, 13)), one);
+                }
+            }
         }
     }
 
