@@ -9,6 +9,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BooleanWritable;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -46,8 +47,8 @@ public class Task2 {
         }
     }
 
-    public static class IntSumReducer extends Reducer<Text,IntWritable,Text,IntWritable> {
-        private IntWritable result = new IntWritable();
+    public static class IntSumReducer extends Reducer<Text,IntWritable,Text,DoubleWritable> {
+        private DoubleWritable result = new DoubleWritable();
         public void reduce(Text key, Iterable<IntWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
@@ -63,7 +64,7 @@ public class Task2 {
                     errSum += 1;
             }
             // set the result to the percentage of error records in the total records for the given medallion number
-            result.set(errSum/totalSum);
+            result.set((double)errSum/(double)totalSum);
             context.write(key, result);
         }
     }
