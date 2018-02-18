@@ -24,7 +24,7 @@ public class Task3 {
             // split the string, on commas, into a list of strings
             String[] fields = line.split(",");
             // only process records with exactly 17 fields, thus discarding some malformed records
-            if  (fields.length == 17) {
+            if  (fields.length == 17 && Double.parseDouble(fields[16]) > 0) {
                 // get the total fare for the current ride
                 Double fare = Double.parseDouble(fields[16]);
                 // get the number of minutes of the current ride
